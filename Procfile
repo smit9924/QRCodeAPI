@@ -1,1 +1,1 @@
-web: gunicorn QRCodeGeneratorAndReader.wsgi --log-file -
+web: gunicorn QRCodeGeneratorAndReader.wsgi
