@@ -1,1 +1,1 @@
-web: waitress-serve --port=$PORT find_my_book.wsgi:application
+web: waitress-serve --port=$PORT QRCodeAPI.wsgi:application
