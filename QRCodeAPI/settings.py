@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p86psw$dp55oxq)sb5d&kg@tpq3!z!&!_6eneqd#^uhlnhwm_u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'qrcodegenerateapi.herokuapp.com']
 
