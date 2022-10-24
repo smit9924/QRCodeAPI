@@ -3,5 +3,5 @@ from django.urls import path
 from QRGenerate import views
 
 urlpatterns = [
-    path('', views.index.as_view(), name='index_page'),
+    path('', views.QRGenerateIndex.as_view(), name='index_page_qrgenerate'),
 ]

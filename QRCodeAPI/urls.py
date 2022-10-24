@@ -19,4 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('QRGenerate.urls')),
+    path('QRGenerate/', include('QRGenerate.urls')),
+    path('QRScane/', include('QRScane.urls')),
 ]
