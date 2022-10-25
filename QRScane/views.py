@@ -10,7 +10,6 @@ import cv2
 import numpy as np
 from pyzbar.pyzbar import decode
 
-
 # Class to render the index page of the app QRScane
 class QRScaneIndex(View):
     template_name = 'QRScane/index.html'
@@ -30,7 +29,7 @@ class StartScanning(View):
         except:
             pass
         cam = VideoCamera()
-        return render(request, self.template_name, context={'img_url': cam.get_frame()} )
+        return render(request, self.template_name)
 
 # Class to capture video class
 class VideoCamera(object):
