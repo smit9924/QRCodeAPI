@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <script src="/static/jquery.js"></script>
+    <style>
+        #basic {
+            background: #000;
+            border: 1px solid #ccc;
+            width: 400px;
+            /* height: 300px; */
+            margin: 0 auto;
+        }
+
+        video,
+        #cssfilters-video,
+        #screenshot-img {
+            width: 400px;
+            height: 300px;
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block;
+        }
+
+        button {
+            background: #333;
+            color: #FFF;
+            border-radius: 4px;
+            border: 0;
+            padding: 10px 14px;
+        }
+
+        button,
+        input[type="button"],
+        input[type="reset"],
+        input[type="submit"] {
+            cursor: pointer;
+        }
+
+        button,
+        input {
+            line-height: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="background-color: gray;">
+        <div id="basic" style="text-align:center;">
+            <video class="videostream" autoplay="" controls height="500" width="500" id="video_tag"></video>
+
+            <!-- AUDIO tag to start the audio stream -->
+            <!-- <audio class="audiostream" autoplay="" id="audio_tag"></audio> -->  
+        </div>
+
+        <div style="text-align:center;">
+            <div style="background-color: gray;">
+                <button class="capture-button" id="cap_btn">Capture</button>
+                <button id="stop-button">Stop</button>
+            </div>
+        </div>
+    </div>
+    <div style="background-color:seashell;">
+        <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+        <!-- <button id="click-photo">Click Photo</button> -->
+    </div>
+    <div style="background-color:seashell; margin-top: 2rem; ">
+        <span id="decoded_data"></span>
+    </div>
+
+    <script>
+        (function () {
+
+            const video = document.getElementById('video_tag'); //targetting the VIDEO tag
+            const captureVideoButton = document.getElementById('cap_btn'); // targetting the CAPTURE BUTTON to start the camera stream
+            const stopVideoButton = document.getElementById('stop-button'); // targetting the STOP BUTTON to stop the camera stream
+            // let click_button = document.querySelector("#click-photo"); //targetting CLICCK PHOTO BUTTON to capture the image from the current video tag
+            let canvas = document.querySelector("#canvas"); // targeting the CANVAS to make image of the current element
+            var mytimeout // variable to hold the value of the SETTIMEOUT ID
+
+            //Capture Video on click
+            captureVideoButton.onclick = function () {
+                navigator.mediaDevices.getUserMedia({
+                    // audio: true, // make the access for the audio or microphone
+                    video: true // make the access for the video or camera
+                })
+                    .then(stream => {
+                        window.localStream = stream; 
+                        video.srcObject = stream; // if permission granted the start the video stream via video tag
+                        // audio.srcObject = stream; // if permission granted then start the stream via audio tag
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+                // query to start repetative ajax call when strem starts
+                $(document).ready(function () {
+                    mytimeout = setTimeout(fetchdata, 5000);
+                });
+            };
+
+            // button to stop the stream on click
+            stopVideoButton.onclick = function () {
+                localStream.getVideoTracks()[0].stop();
+                video.src = '';
+                clearTimeout(mytimeout)  
+
+                // localStream.getAudioTracks()[0].stop();
+                // audio.src = '';
+            };
+
+            // function that make the ajax call with frame and return the decoded data from the QR Code
+            function fetchdata() {
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                let image_data_url = canvas.toDataURL('image/png');
+                var continue_call = 'true'
+                var decoded_text = 'null'
+
+                // JQuery AJAX block
+                $.ajax({
+                    url: '/QRScane/ajaxCall', 
+                    type: 'post', 
+                    data: {
+                        'image_data_url': image_data_url,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        // Perform operation on return value
+                        console.log('Ajax succesfully executed')
+                        continue_call = response['continue_call']
+                        decoded_text = response['decoded_text']
+                    },
+                    complete: function (response) {                        
+                        console.log('continue call : ' + continue_call)
+                        if(continue_call == 'true')
+                        {
+                            console.log('in the if')
+                            mytimeout = setTimeout(fetchdata, 5000);
+                            
+                        }
+                        else
+                        {
+                            document.getElementById('decoded_data').innerHTML = "<h1><strong>Decoded Text : </strong></h1><h3>" + decoded_text + "</h3>"
+                            console.log('in the else')
+                            clearTimeout(mytimeout)
+                            
+                        }
+                        console.log("timeout id : " + mytimeout)
+                    }
+                });
+            }
+
+        })();
+
+
+    </script>
+</body>
+
+</html>

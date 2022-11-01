@@ -1,7 +1,9 @@
 # Dependencies to rensder the page
 from django.shortcuts import render, HttpResponse
 from django.views import View
-from django.http import StreamingHttpResponse # To return the captured frame to the web
+from django.http import JsonResponse, StreamingHttpResponse # To return the captured frame to the web
+import base64
+from numpy import asarray
 
 # Dependencies to scan and capture qr code
 from dbr import *
@@ -17,59 +19,38 @@ class QRScaneIndex(View):
     def get(self, request):
         return render(request, self.template_name)
 
-# Class to start the scanning
+# class torender the scanning page
 class StartScanning(View):
-    template_name = 'QRScane/index.html/'
+    template_name = 'QRScane/scan.html'
 
-    # @gzip.gzip_page
     def get(self, request):
-        try:
-            cam = VideoCamera()
-            return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
-        except:
-            pass
-        cam = VideoCamera()
         return render(request, self.template_name)
 
-# Class to capture video class
-class VideoCamera(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
-        (self.grabbed, self.frame) = self.video.read()
-        threading.Thread(target=self.update, args=()).start()
+# class to handel the ajax for decode the data
+class AjaxCall(View):
+    def post(self, request):
+        im_b64 = request.POST.get('image_data_url').split(',')[1]
+        im_bytes = base64.b64decode(im_b64)
+        image = asarray(im_bytes)
+        # im_arr is one-dim Numpy array
+        im_arr = np.frombuffer(im_bytes, dtype=np.uint8)
+        image = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
+        print('this is smit patel')
 
-    def __del__(self):
-        self.video.release()
+        decoded_text = "null"
+        continue_call = 'true'
 
-    def get_frame(self):
-        image = self.frame
         for code in decode(image):
+            print('in the loop')
             decoded_data = code.data.decode('utf-8')
-            rect_pts = code.rect
-
             if decoded_data:
-                if decoded_data == "True":
-                    color = (0, 255, 0)
-                    print_text = "Allow To Enter."
-                elif decoded_data == "False":
-                    color = (0, 0, 255)
-                    print_text = "Deny To Enter."
-                else:
-                    color = (255, 0, 0)
-                    print_text = "Not Detect!"
+                decoded_text = decoded_data
+                continue_call = 'false'
 
-                pts = np.array([code.polygon], np.int32)
-                cv2.polylines(image, [pts], True, (0, 255, 0), 3)
-                cv2.putText(image, str(print_text), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX, 1, color, thickness=3)
-        success, jpeg = cv2.imencode('.jpeg', image)
-        return jpeg.tobytes()
+        print(decoded_text)
 
-    def update(self):
-        while True:
-            (self.grabbed, self.frame) = self.video.read()
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+        response = {
+            'decoded_text': decoded_text,
+            'continue_call': continue_call
+        }
+        return JsonResponse(response)
