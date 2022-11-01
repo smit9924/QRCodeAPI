@@ -4,6 +4,8 @@ from django.views import View
 from django.http import JsonResponse, StreamingHttpResponse # To return the captured frame to the web
 import base64
 from numpy import asarray
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
 # Dependencies to scan and capture qr code
 from dbr import *
@@ -28,6 +30,8 @@ class StartScanning(View):
 
 # class to handel the ajax for decode the data
 class AjaxCall(View):
+
+    @method_decorator(csrf_exempt)
     def post(self, request):
         im_b64 = request.POST.get('image_data_url').split(',')[1]
         im_bytes = base64.b64decode(im_b64)
