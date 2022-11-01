@@ -18,6 +18,8 @@ from pyzbar.pyzbar import decode
 class QRScaneIndex(View):
     template_name = 'QRScane/index.html'
 
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_exempt)
     def get(self, request):
         return render(request, self.template_name)
 
@@ -31,6 +33,7 @@ class StartScanning(View):
 # class to handel the ajax for decode the data
 class AjaxCall(View):
 
+    @method_decorator(ensure_csrf_cookie)
     @method_decorator(csrf_exempt)
     def post(self, request):
         im_b64 = request.POST.get('image_data_url').split(',')[1]
