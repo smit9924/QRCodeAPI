@@ -128,9 +128,10 @@
                 $.ajax({
                     url: '/QRScane/ajaxCall', 
                     type: 'post', 
+                    headers: { 'ACookieAvailableCrossSite': 'SameSite=None' },
                     data: {
                         'image_data_url': image_data_url,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
                     },
                     success: function (response) {
                         // Perform operation on return value
