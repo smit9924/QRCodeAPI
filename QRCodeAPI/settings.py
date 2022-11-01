@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-p86psw$dp55oxq)sb5d&kg@tpq3!z!&!_6eneqd#^uhlnhwm_u
 DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'qrcodegenerateapi.herokuapp.com']
-CSRF_TRUSTED_ORIGINS = ['localhost', '127.0.0.1', 'qrcodegenerateapi.herokuapp.com']
+CSRF_TRUSTED_ORIGINS = ['https://qrcodegenerateapi.herokuapp.com']
 
 
 # Application definition
@@ -137,7 +137,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ['SENDEREMAIL']
-EMAIL_HOST_PASSWORD = os.environ['EMAILPASSWORD']
+# EMAIL_HOST_USER = os.environ['SENDEREMAIL']
+EMAIL_HOST_USER = 'smitpatel2301322002@gmail.com'
+EMAIL_HOST_PASSWORD = 'cvdbdfbdvfd'
+# EMAIL_HOST_PASSWORD = os.environ['EMAILPASSWORD']
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False

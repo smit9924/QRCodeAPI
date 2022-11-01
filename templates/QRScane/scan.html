@@ -53,7 +53,6 @@
 </head>
 
 <body>
-    {% csrf_token %}
     <div style="background-color: gray;">
         <div id="basic" style="text-align:center;">
             <video class="videostream" autoplay="" controls height="500" width="500" id="video_tag"></video>
@@ -128,9 +127,29 @@
 
                 // JQuery AJAX block
                 $.ajax({
+                    beforeSend: function(xhr, settings) {
+                        function getCookie(name) {
+                            var cookieValue = null;
+                            if (document.cookie && document.cookie != '') {
+                                var cookies = document.cookie.split(';');
+                                for (var i = 0; i < cookies.length; i++) {
+                                    var cookie = jQuery.trim(cookies[i]);
+                                    // Does this cookie string begin with the name we want?
+                                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                        break;
+                                    }
+                                }
+                            }
+                            return cookieValue;
+                        }
+                        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                            // Only send the token to relative URLs i.e. locally.
+                            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                        }
+                    } ,
                     url: '/QRScane/ajaxCall', 
                     type: 'post', 
-                    headers: { 'ACookieAvailableCrossSite': 'SameSite=None' },
                     data: {
                         'image_data_url': image_data_url,
                         csrfmiddlewaretoken: "{{ csrf_token }}",
