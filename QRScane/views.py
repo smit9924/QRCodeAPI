@@ -4,8 +4,6 @@ from django.views import View
 from django.http import JsonResponse, StreamingHttpResponse # To return the captured frame to the web
 import base64
 from numpy import asarray
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.utils.decorators import method_decorator
 
 # Dependencies to scan and capture qr code
 from dbr import *
@@ -18,7 +16,6 @@ from pyzbar.pyzbar import decode
 class QRScaneIndex(View):
     template_name = 'QRScane/index.html'
     
-    @method_decorator(ensure_csrf_cookie)
     def get(self, request):
         return render(request, self.template_name)
 

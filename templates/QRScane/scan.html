@@ -85,24 +85,6 @@
             // let click_button = document.querySelector("#click-photo"); //targetting CLICCK PHOTO BUTTON to capture the image from the current video tag
             let canvas = document.querySelector("#canvas"); // targeting the CANVAS to make image of the current element
             var mytimeout // variable to hold the value of the SETTIMEOUT ID
-
-             function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            const csrftoken = getCookie('csrftoken');
-            console.log("toke : " + csrftoken)
             
 
             //Capture Video on click
@@ -150,7 +132,7 @@
                     headers: { 'ACookieAvailableCrossSite': 'SameSite=None' },
                     data: {
                         'image_data_url': image_data_url,
-                        'csrfmiddlewaretoken': getCookie('csrftoken'),
+                        'csrfmiddlewaretoken': "{{ csrf_token }}",
                     },
                     success: function (response) {
                         // Perform operation on return value
