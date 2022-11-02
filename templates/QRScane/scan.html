@@ -91,7 +91,7 @@
             captureVideoButton.onclick = function () {
                 navigator.mediaDevices.getUserMedia({
                     // audio: true, // make the access for the audio or microphone
-                    video: true // make the access for the video or camera
+                    video: {facingMode: 'environment'} // make the access for the video or camera
                 })
                     .then(stream => {
                         window.localStream = stream; 
