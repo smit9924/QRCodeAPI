@@ -156,26 +156,21 @@
                     },
                     success: function (response) {
                         // Perform operation on return value
-                        console.log('Ajax succesfully executed')
                         continue_call = response['continue_call']
                         decoded_text = response['decoded_text']
                     },
                     complete: function (response) {                        
-                        console.log('continue call : ' + continue_call)
                         if(continue_call == 'true')
                         {
-                            console.log('in the if')
                             mytimeout = setTimeout(fetchdata, 5000);
                             
                         }
                         else
                         {
                             document.getElementById('decoded_data').innerHTML = "<h1><strong>Decoded Text : </strong></h1><h3>" + decoded_text + "</h3>"
-                            console.log('in the else')
                             clearTimeout(mytimeout)
                             
                         }
-                        console.log("timeout id : " + mytimeout)
                     }
                 });
             }
