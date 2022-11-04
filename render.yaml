@@ -1,9 +1,0 @@
-
-services:
-- type: web
-  name: QRCodeAPI
-  env: python
-  plan: starter
-  buildCommand: ./build.sh
-  startCommand: gunicorn config.wsgi:application
-  autoDeploy: false
