@@ -21,7 +21,8 @@ class QRScaneIndex(View):
 
 # class torender the scanning page
 class StartScanning(View):
-    template_name = 'QRScane/scan.html'
+    # template_name = 'QRScane/scan.html'
+    template_name = 'QRScane/scane2.html'
 
     def get(self, request):
         return render(request, self.template_name)
@@ -30,28 +31,93 @@ class StartScanning(View):
 class AjaxCall(View):
 
     def post(self, request):
-        im_b64 = request.POST.get('image_data_url').split(',')[1]
-        im_bytes = base64.b64decode(im_b64)
-        image = asarray(im_bytes)
-        # im_arr is one-dim Numpy array
-        im_arr = np.frombuffer(im_bytes, dtype=np.uint8)
-        image = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
-        print('this is smit patel')
-
-        decoded_text = "null"
-        continue_call = 'true'
-
-        for code in decode(image):
-            print('in the loop')
-            decoded_data = code.data.decode('utf-8')
-            if decoded_data:
-                decoded_text = decoded_data
-                continue_call = 'false'
-
-        print(decoded_text)
-
+        print(request.POST.get('name'))
         response = {
-            'decoded_text': decoded_text,
-            'continue_call': continue_call
-        }
+            'name':'smit',
+            'surname':'patel',
+            }
         return JsonResponse(response)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class AjaxCall(View):
+
+#     def post(self, request):
+#         im_b64 = request.POST.get('image_data_url').split(',')[1]
+#         im_bytes = base64.b64decode(im_b64)
+#         image = asarray(im_bytes)
+#         # im_arr is one-dim Numpy array
+#         im_arr = np.frombuffer(im_bytes, dtype=np.uint8)
+#         image = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
+#         print('this is smit patel')
+
+#         decoded_text = "null"
+#         continue_call = 'true'
+
+#         for code in decode(image):
+#             print('in the loop')
+#             decoded_data = code.data.decode('utf-8')
+#             if decoded_data:
+#                 decoded_text = decoded_data
+#                 continue_call = 'false'
+
+#         print(decoded_text)
+
+#         response = {
+#             'decoded_text': decoded_text,
+#             'continue_call': continue_call
+#         }
+#         return JsonResponse(response)
+
+
+
+# from cryptography.fernet import Fernet
+
+# # we will be encrypting the below string.
+# message = "hello geeks"
+
+# # generate a key for encryption and decryption
+# # You can use fernet to generate
+# # the key or use random key generator
+# # here I'm using fernet to generate key
+
+# key = Fernet.generate_key()
+
+# # Instance the Fernet class with the key
+
+# fernet = Fernet(key)
+
+# # then use the Fernet class instance
+# # to encrypt the string string must
+# # be encoded to byte string before encryption
+# encMessage = fernet.encrypt(message.encode())
+
+# print("original string: ", message)
+# print("encrypted string: ", encMessage)
+
+# # decrypt the encrypted string with the
+# # Fernet instance of the key,
+# # that was used for encrypting the string
+# # encoded byte string is returned by decrypt method,
+# # so decode it to string with decode methods
+# decMessage = fernet.decrypt(encMessage).decode()
+
+# print("decrypted string: ", decMessage)
