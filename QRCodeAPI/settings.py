@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p86psw$dp55oxq)sb5d&kg@tpq3!z!&!_6eneqd#^uhlnhwm_u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = 'RENDER' not in os.environ
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'qrcodegenerateapi.herokuapp.com', '*']
@@ -127,9 +127,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ['SENDEREMAIL']
-# EMAIL_HOST_USER = 'smitpatel2301322002@gmail.com'
-# EMAIL_HOST_PASSWORD = 'dfvsfgsdv'
-EMAIL_HOST_PASSWORD = os.environ['EMAILPASSWORD']
+# EMAIL_HOST_USER = os.environ['SENDEREMAIL']
+EMAIL_HOST_USER = 'bvmgenesis@gmail.com'
+EMAIL_HOST_PASSWORD = 'iohgyyjjevauialj'
+# EMAIL_HOST_PASSWORD = os.environ['EMAILPASSWORD']
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False

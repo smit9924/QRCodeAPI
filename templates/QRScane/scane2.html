@@ -47,15 +47,10 @@
             // const html5QrCode = new Html5Qrcode("reader");
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 if (prev == decodedText) {
-                    console.log("decoded text is same as the previous text")
                 }
                 else
                 {
-                    // console.log("Decoded Text : " + decodedText)
-                    // console.log("Decoded Result : " + decodedResult)
-                    console.log("Calling the ajax request:")
-                    callAjax();
-                    console.log("Ajax is executed successfully")
+                    callAjax(decodedText);
                 }
                 prev = decodedText
                 // console.log("prev" + prev)
@@ -84,19 +79,18 @@
             });
         })
 
-        function callAjax()
+        function callAjax(encMessage)
         {
             $.ajax({
                     url: '/QRScane/ajaxCall', 
                     type: 'post', 
                     data: {
-                        'name':'smit',
+                        'encMessage':encMessage,
                         csrfmiddlewaretoken: "{{ csrf_token }}",
                     },
                     success: function (response) {
                         // Perform operation on return value
-                        console.log(response['name'])
-                        console.log(response['surname'])
+                        console.log("Decoded Data : " + response['decode_data'])
                     },
                 });
         }

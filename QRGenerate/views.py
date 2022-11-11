@@ -18,6 +18,10 @@ from QRCodeAPI import settings
 # Dependency to math string wiht the regex
 import re
 
+# Dependecy to encrypt key
+from cryptography.fernet import Fernet
+import base64
+import hashlib
 
 # Class that render the index page of the app QRGenerate
 class QRGenerateIndex(View):
@@ -28,6 +32,7 @@ class QRGenerateIndex(View):
 
 # Class to create QR Code and send the Email
 class QRGenerator(View):
+    pass
     template_name = 'QRGenerate/EmailTemplate.html'
 
     def get(self, request, email, aligibility):
@@ -107,10 +112,17 @@ class QRGenerator(View):
 class ThanganatQRCodeGenerate(View):
     template_name = 'QRGenerate/EmailTemplate.html'
 
-    def get(self, request, email, id, password):
+    def get(self, request, email, id):
+
+        # 43 + =
+        key = "smit"
+        key = self.gen_fernet_key(key.encode('utf-8'))
+        fernet = Fernet(key)
+        encID = fernet.encrypt(id.encode())
+        # decMessage = fernet.decrypt(encMessage).decode()
+        
         # calling the method to generate the QRCode
-        if self.validateID(id):
-            img = self.QRCodeGenerate(id)
+        img = self.QRCodeGenerate(encID)
 
         pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         if re.match(pattern,email):
@@ -124,6 +136,13 @@ class ThanganatQRCodeGenerate(View):
 
         return HttpResponse(json.dumps({'EmailSent': EmailSent, 'Error': Error}),
                        content_type="application/json")
+
+    # Method to generate fernet key
+    def gen_fernet_key(self, passcode:bytes) -> bytes:
+        assert isinstance(passcode, bytes)
+        hlib = hashlib.md5()
+        hlib.update(passcode)
+        return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
     
     # This method will generate the QR Code and return the PIL Image Object
     def QRCodeGenerate(self, data):
@@ -136,13 +155,6 @@ class ThanganatQRCodeGenerate(View):
         # img.save('static/QRCode.png')
 
         return img
-    
-    def validateID(idno):
-        ID_pattern = r'/^[0-9]{2}[A-Z]{2}[0-9]{3}$/'
-        if re.match(ID_pattern,idno):
-            return True
-        else :
-            return False
 
     # This method will send the E-mail if the given mail address is pass the validation
     def SendEmail(self, email, img):

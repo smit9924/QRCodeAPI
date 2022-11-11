@@ -12,6 +12,10 @@ import cv2
 import numpy as np
 from pyzbar.pyzbar import decode
 
+# Dependency to decode the data
+from cryptography.fernet import Fernet
+import hashlib, base64
+
 # Class to render the index page of the app QRScane
 class QRScaneIndex(View):
     template_name = 'QRScane/index.html'
@@ -31,12 +35,22 @@ class StartScanning(View):
 class AjaxCall(View):
 
     def post(self, request):
-        print(request.POST.get('name'))
+        key = "smit"
+        key = self.gen_fernet_key(key.encode('utf-8'))
+        fernet = Fernet(key)
+        decMessage = fernet.decrypt(request.POST.get('encMessage')).decode()
+
         response = {
-            'name':'smit',
-            'surname':'patel',
+            'Message':decMessage,
+            'Success':'true/false',
             }
         return JsonResponse(response)
+
+    def gen_fernet_key(self, passcode:bytes) -> bytes:
+        assert isinstance(passcode, bytes)
+        hlib = hashlib.md5()
+        hlib.update(passcode)
+        return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
 
 
 
