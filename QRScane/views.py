@@ -26,7 +26,7 @@ class QRScaneIndex(View):
 # class torender the scanning page
 class StartScanning(View):
     # template_name = 'QRScane/scan.html'
-    template_name = 'QRScane/scane2.html'
+    template_name = 'QRScane/scaneThanganat.html'
 
     def get(self, request):
         return render(request, self.template_name)

@@ -110,7 +110,7 @@ class QRGenerator(View):
 
 
 class ThanganatQRCodeGenerate(View):
-    template_name = 'QRGenerate/EmailTemplate.html'
+    template_name = 'QRGenerate/ThanganatEmailTemplate.html'
 
     def get(self, request, email, id):
 
