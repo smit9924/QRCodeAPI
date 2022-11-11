@@ -162,7 +162,7 @@ class ThanganatQRCodeGenerate(View):
         msgRoot = MIMEMultipart('related')
         msgRoot['Subject'] = 'This is the E-mail from team Genesis'
         msgRoot['From'] = 'smitpatel2301322002@gmail.com'
-        msgRoot['To'] = 'smit.dpatel9924@gmail.com'
+        # msgRoot['To'] = 'smit.dpatel9924@gmail.com'
         msgRoot.preamble = 'This is the multipart message in the form of MIME format'
 
         msgALternative = MIMEMultipart('alternative')
