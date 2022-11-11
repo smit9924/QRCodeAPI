@@ -110,7 +110,7 @@ class ThanganatQRCodeGenerate(View):
     def get(self, request, email, id, password):
         # calling the method to generate the QRCode
         if self.validateID(id):
-            img = self.QRCodeGenerate(aligibility)
+            img = self.QRCodeGenerate(id)
 
         pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         if re.match(pattern,email):
@@ -138,8 +138,8 @@ class ThanganatQRCodeGenerate(View):
         return img
     
     def validateID(idno):
-        pattern = r'/^[0-9]{2}[A-Z]{2}[0-9]{3}$/'
-        if re.match(pattern,idno):
+        ID_pattern = r'/^[0-9]{2}[A-Z]{2}[0-9]{3}$/'
+        if re.match(ID_pattern,idno):
             return True
         else :
             return False
