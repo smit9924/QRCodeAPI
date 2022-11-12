@@ -15,8 +15,7 @@ SECRET_KEY = 'django-insecure-p86psw$dp55oxq)sb5d&kg@tpq3!z!&!_6eneqd#^uhlnhwm_u
 DEBUG = False
 # DEBUG = 'RENDER' not in os.environ
 
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'qrcodegenerateapi.herokuapp.com', '*']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'qrcodegenerateapi.herokuapp.com', '*']
 CSRF_TRUSTED_ORIGINS = ['https://qrcodegenerateapi.herokuapp.com']
 
 
