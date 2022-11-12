@@ -11,6 +11,14 @@
             -webkit-transform: scaleX(-1);
             transform: scaleX(-1);
         }
+        #container_div
+        {
+            color:white; margin-top: 2rem; 
+            padding-top: 2rem;
+            padding-bottom: 2rem; 
+            text-align: center;
+            border: 2px dashed #f69c55;
+        }
     </style>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="/static/jquery.js"></script>
@@ -24,6 +32,9 @@
             <button id="stop_scanning">Stop Scanning</button>
         </div>
     </center>
+    <div id="container_div">
+        <center><h1 id="headin_tag">This is smit patel</h1></center>
+    </div>
 
     <script>
         var prev = ""
@@ -55,13 +66,13 @@
                 prev = decodedText
                 // console.log("prev" + prev)
             };
-            const config = { fps: 30, qrbox: { width: 300, height: 300 } };
+            const config = { fps: 10, qrbox: { width: 225, height: 225 } };
 
             // If you want to prefer front camera
-            html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
+             //html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
 
             // If you want to prefer back camera
-            // html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
 
             // Select front camera or fail with `OverconstrainedError`.
             // html5QrCode.start({ facingMode: { exact: "user" } }, config, qrCodeSuccessCallback);
@@ -91,9 +102,32 @@
                     success: function (response) {
                         // Perform operation on return value
                         console.log("Decoded Data : " + response['Message'])
+                        var heading = document.getElementById('headin_tag')
+                        {% comment %} heading.innerHTML = "This is smit" {% endcomment %}
+                        if(response['success'] == 'true')
+                        {
+                            document.getElementById('container_div').style.backgroundColor = "#5aa95a"
+                            heading.innerHTML = response['Message']
+                        }
+                        else if(response['success'] == 'false')
+                        {
+                            document.getElementById('container_div').style.backgroundColor = "red"
+                            heading.innerHTML = response['Message']
+                        }
                     },
                 });
         }
+
+        document.body.onkeyup = function(e) {
+            if (e.key == " " ||
+                e.code == "Space" ||      
+                e.keyCode == 32      
+            ) {
+              console.log("spacebar hit")
+            }
+          }
+
+       
     </script>
 </body>
 

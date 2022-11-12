@@ -42,7 +42,7 @@ class AjaxCall(View):
 
         response = {
             'Message':decMessage,
-            'Success':'true/false',
+            'success':'false',
             }
         return JsonResponse(response)
 
