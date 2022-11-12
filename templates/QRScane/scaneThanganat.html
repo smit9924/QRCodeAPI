@@ -38,6 +38,8 @@
 
     <script>
         var prev = ""
+        var decodedID = ""
+        var validQR = ""
         var start_scanning = document.getElementById("start_scanning")
         const html5QrCode = new Html5Qrcode("reader");
         start_scanning.addEventListener("click", () => {
@@ -102,11 +104,14 @@
                     success: function (response) {
                         // Perform operation on return value
                         console.log("Decoded Data : " + response['Message'])
+                        decodedID = response['Message']
+                        validQR = response['success']
+
                         var heading = document.getElementById('headin_tag')
-                        {% comment %} heading.innerHTML = "This is smit" {% endcomment %}
                         if(response['success'] == 'true')
                         {
-                            document.getElementById('container_div').style.backgroundColor = "#5aa95a"
+                            //document.getElementById('container_div').style.backgroundColor = "#5aa95a"
+                            document.getElementById('container_div').style.backgroundColor = "blue"
                             heading.innerHTML = response['Message']
                         }
                         else if(response['success'] == 'false')
@@ -119,11 +124,33 @@
         }
 
         document.body.onkeyup = function(e) {
-            if (e.key == " " ||
-                e.code == "Space" ||      
-                e.keyCode == 32      
-            ) {
-              console.log("spacebar hit")
+            if (e.key == " " || e.code == "Space" ||  e.keyCode == 32 ) {
+                if(validQR == 'true')
+                {
+                    $.ajax({
+                        url: '/QRScane/UpdateAjaxCall', 
+                        type: 'post', 
+                        data: {
+                            'ID':decodedID,
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                        },
+                        success: function (response) {
+                            console.log(response)
+                            if(response['success'] == 'true')
+                        {
+                            document.getElementById('container_div').style.backgroundColor = "#5aa95a"
+                            heading.innerHTML = response['Message']
+                        }
+                        else if(response['success'] == 'false')
+                        {
+                            document.getElementById('container_div').style.backgroundColor = "red"
+                            heading.innerHTML = response['Message']
+                        }
+                        var decodedID = ""
+                        var validQR = ""
+                    }
+                });
+                }
             }
           }
 

@@ -68,9 +68,9 @@ class QRGenerator(View):
     def SendEmail(self, email, img):
         # Create the root message and set the details
         msgRoot = MIMEMultipart('related')
-        msgRoot['Subject'] = 'This is the E-mail from team Genesis'
-        msgRoot['From'] = 'smitpatel2301322002@gmail.com'
-        msgRoot['To'] = 'smit.dpatel9924@gmail.com'
+        msgRoot['Subject'] = 'Team Genesis'
+        msgRoot['From'] = settings.EMAIL_HOST_USER
+        msgRoot['To'] = email
         msgRoot.preamble = 'This is the multipart message in the form of MIME format'
 
         msgALternative = MIMEMultipart('alternative')
@@ -160,8 +160,8 @@ class ThanganatQRCodeGenerate(View):
     def SendEmail(self, email, img):
         # Create the root message and set the details
         msgRoot = MIMEMultipart('related')
-        msgRoot['Subject'] = 'This is the E-mail from team Genesis'
-        msgRoot['From'] = 'smitpatel2301322002@gmail.com'
+        msgRoot['Subject'] = 'Team Genesis'
+        msgRoot['From'] = settings.EMAIL_HOST_USER
         msgRoot['To'] = email
         msgRoot.preamble = 'This is the multipart message in the form of MIME format'
 

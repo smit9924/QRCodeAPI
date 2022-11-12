@@ -16,6 +16,11 @@ from pyzbar.pyzbar import decode
 from cryptography.fernet import Fernet
 import hashlib, base64
 
+# Dependency to connect with mongo db
+import pymongo
+import re
+
+
 # Class to render the index page of the app QRScane
 class QRScaneIndex(View):
     template_name = 'QRScane/index.html'
@@ -38,12 +43,27 @@ class AjaxCall(View):
         key = "smit"
         key = self.gen_fernet_key(key.encode('utf-8'))
         fernet = Fernet(key)
-        decMessage = fernet.decrypt(request.POST.get('encMessage')).decode()
+        try : 
 
-        response = {
-            'Message':decMessage,
-            'success':'false',
-            }
+            decMessage = fernet.decrypt(request.POST.get('encMessage')).decode()
+
+            if self.ValidateID(decMessage):
+                success = "true"
+                message = decMessage
+            else:
+                success = "false"
+                message = "Invalid Email QR Code!"
+
+            response = {
+                'Message':message,
+                'success':success,
+                }
+        except:
+            response = {
+                'Message':"Invalid QR Code!",
+                'success':"false",
+                }
+
         return JsonResponse(response)
 
     def gen_fernet_key(self, passcode:bytes) -> bytes:
@@ -52,86 +72,44 @@ class AjaxCall(View):
         hlib.update(passcode)
         return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
 
+    def ValidateID(self, idno):
+        idPattern = '[0-9]{2}[a-zA-Z]{2}[0-9]{3}'
+
+        if re.match(idPattern,idno):
+            return True
+        else:
+            return False
 
 
+        
 
 
+class UpdateAjaxCall(View):
 
+    def post(self, request):
+        message = "null"
+        try:
+            client = pymongo.MongoClient('mongodb+srv://dikwickley:dikwickley077@cluster0.lnifa3d.mongodb.net/?retryWrites=true&w=majority')
+            db = client['test']
 
+            college_id = request.POST.get('ID')
 
+            query = {"collegeid": college_id, "active": True}
+            newval = {"$set": {"active": False}}
 
+            if db.passes.update_one(query, newval):
+                messgae = "Go...."
+                success = "true"
+            else:
+                messgae = "This QR Code is Already Used Once!"
+                success = "false"
+        except:
+            message = "Please try again!"
+            success = "false"
+        
+        response = {
+                'Message':message,
+                'success':success,
+                }
+        return JsonResponse(response)
 
-
-
-
-
-
-
-
-
-
-
-
-# class AjaxCall(View):
-
-#     def post(self, request):
-#         im_b64 = request.POST.get('image_data_url').split(',')[1]
-#         im_bytes = base64.b64decode(im_b64)
-#         image = asarray(im_bytes)
-#         # im_arr is one-dim Numpy array
-#         im_arr = np.frombuffer(im_bytes, dtype=np.uint8)
-#         image = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
-#         print('this is smit patel')
-
-#         decoded_text = "null"
-#         continue_call = 'true'
-
-#         for code in decode(image):
-#             print('in the loop')
-#             decoded_data = code.data.decode('utf-8')
-#             if decoded_data:
-#                 decoded_text = decoded_data
-#                 continue_call = 'false'
-
-#         print(decoded_text)
-
-#         response = {
-#             'decoded_text': decoded_text,
-#             'continue_call': continue_call
-#         }
-#         return JsonResponse(response)
-
-
-
-# from cryptography.fernet import Fernet
-
-# # we will be encrypting the below string.
-# message = "hello geeks"
-
-# # generate a key for encryption and decryption
-# # You can use fernet to generate
-# # the key or use random key generator
-# # here I'm using fernet to generate key
-
-# key = Fernet.generate_key()
-
-# # Instance the Fernet class with the key
-
-# fernet = Fernet(key)
-
-# # then use the Fernet class instance
-# # to encrypt the string string must
-# # be encoded to byte string before encryption
-# encMessage = fernet.encrypt(message.encode())
-
-# print("original string: ", message)
-# print("encrypted string: ", encMessage)
-
-# # decrypt the encrypted string with the
-# # Fernet instance of the key,
-# # that was used for encrypting the string
-# # encoded byte string is returned by decrypt method,
-# # so decode it to string with decode methods
-# decMessage = fernet.decrypt(encMessage).decode()
-
-# print("decrypted string: ", decMessage)
